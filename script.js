@@ -2,9 +2,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const addButton = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || []; // Initialize tasks from Local Storage
   
     function addTask(taskText, save = true) {
+      const taskText = taskInput.value.trim();
+  
+      if (taskText === "") {
+        alert("Please enter a task.");
+        return;
+      }
+  
       const listItem = document.createElement('li');
       listItem.textContent = taskText;
   
@@ -22,25 +28,31 @@ document.addEventListener('DOMContentLoaded', function() {
       taskInput.value = '';
   
       if (save) {
-        tasks.push(taskText);
-        saveTasks();
+        // Retrieve existing tasks from Local Storage
+        let storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  
+        // Add the new task to the array
+        storedTasks.push(taskText);
+  
+        // Save the updated tasks array to Local Storage
+        localStorage.setItem('tasks', JSON.stringify(storedTasks));
       }
     }
   
     function removeTask(taskText) {
-      const index = tasks.indexOf(taskText);
-      if (index !== -1) {
-        tasks.splice(index, 1);
-        saveTasks();
-      }
-    }
+      // Retrieve existing tasks from Local Storage
+      let storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
   
-    function saveTasks() {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
+      // Remove the task from the array
+      storedTasks = storedTasks.filter(task => task !== taskText);
+  
+      // Save the updated tasks array to Local Storage
+      localStorage.setItem('tasks', JSON.stringify(storedTasks));
     }
   
     function loadTasks() {
-      tasks.forEach(taskText => addTask(taskText, false));
+      const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      storedTasks.forEach(taskText => addTask(taskText, false)); // Load tasks without saving
     }
   
     addButton.addEventListener('click', addTask);
