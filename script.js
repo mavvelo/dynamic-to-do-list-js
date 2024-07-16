@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const taskList = document.getElementById('task-list');
 
     function addTask(taskText, save = true) {
+        const taskText = taskInput.value.trim();
+
         if (taskText === "") {
             alert("Please enter a task.");
             return;
@@ -44,10 +46,11 @@ document.addEventListener('DOMContentLoaded', function() {
         storedTasks.forEach(taskText => addTask(taskText, false)); // 'false' indicates not to save again to Local Storage
     }
 
-    addButton.addEventListener('click', () => addTask(taskInput.value));
+    addButton.addEventListener('click', addTask);
     taskInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
-            addTask(taskInput.value);
+            addTask();
+
         }
     });
 
