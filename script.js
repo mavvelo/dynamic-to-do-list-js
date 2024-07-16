@@ -1,64 +1,42 @@
-const addButton = document.getElementById('add-task-btn');
-const taskInput = document.getElementById('task-input');
-const taskList = document.getElementById('task-list');
 
-loadTasks();
+document.addEventListener('DOMContentLoaded', function() {
+  const addButton = document.getElementById('add-task-btn');
+  const taskInput = document.getElementById('task-input');
+  const taskList = document.getElementById('task-list');
 
-function addTask() {
-	const task = taskInput.value.trim();
-	if (task) {
-		createTaskElement(task);
-		taskInput.value = '';
-		saveTasks();
-	} else {
-		alert('Please enter a task!');
-	}
-}
+  function addTask(taskText, save = true) {
+    const taskText = taskInput.value.trim();
 
-addEventListener('message', async (event) => {
-  return true; // Indicate asynchronous response
+    if (taskText === "") {
+      alert("Please enter a task.");
+      return;
+    }
 
-  try {
-      // Perform your asynchronous operation here
-      const result = await fetchData(); 
+    const listItem = document.createElement('li');
+    listItem.textContent = taskText;
 
-      // Send the response
-      event.source.postMessage(result); 
-  } catch (error) {
-      console.error('Error in asynchronous operation:', error);
-      // Handle the error gracefully, perhaps sending an error message back
-      event.source.postMessage({ error: error.message });
+    const removeButton = document.createElement('button');
+    removeButton.textContent = "Remove";
+    removeButton.classList.add('remove-btn');
+    removeButton.onclick = function() {
+      taskList.removeChild(listItem);
+      removeTask(taskText);
+    };
+
+    listItem.appendChild(removeButton);
+    taskList.appendChild(listItem);
+
+    taskInput.value = '';
+    
   }
+
+//EventListeners
+
+    addButton.addEventListener('click', addTask);
+    taskInput.addEventListener('keypress', (event) => {
+     if (event.key === 'Enter') {
+      addTask();
+      }
+  });
+
 });
-
-addButton.addEventListener('click', addTask);
-
-function createTaskElement(task) {
-	const listItem = document.createElement('li');
-	listItem.textContent = task;
-	const deleteButton = document.createElement('button');
-	deleteButton.textContent = 'Remove';
-	deleteButton.className = 'remove-btn';
-
-	listItem.appendChild(deleteButton);
-	taskList.appendChild(listItem);
-
-	deleteButton.addEventListener('click', function() {
-		taskList.removeChild(listItem);
-		saveTasks();
-	});
-}
-
-function saveTasks() {
-	let tasks = [];
-	taskList.querySelectorAll('li').forEach(function(item) {
-		tasks.push(item.textContent.replace('Remove', '').trim());
-	});
-
-	localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-
-function loadTasks() {
-	const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-	tasks.forEach(createTaskElement);
-}
