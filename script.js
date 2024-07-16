@@ -34,44 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (event.key === 'Enter') {
         addTask();
       }
-
-      taskList.addEventListener("click", function (event) {
-        if (event.target.classList.contains("deleteButton")) {
-            const taskElement = event.target.parentElement;
-            const taskText = taskElement.querySelector("span").innerText;
-            taskElement.remove();
-            removeTaskFromStorage(taskText);
-        }
-    });
-
-    function createTaskElement(taskText) {
-        const listItem = document.createElement("li");
-        listItem.innerHTML = `
-            <input type="checkbox" class="checkmark">
-            <span>${taskText}</span>
-            <button class="deleteButton">Delete</button>
-        `;
-        taskList.appendChild(listItem);
-        saveTaskToStorage(taskText);
-    }
-
-    function renderTasks(tasks) {
-        tasks.forEach(task => {
-            createTaskElement(task);
-        });
-    }
-
-    function saveTaskToStorage(taskText) {
-        const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        storedTasks.push(taskText);
-        localStorage.setItem("tasks", JSON.stringify(storedTasks));
-    }
-
-    function removeTaskFromStorage(taskText) {
-        const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const updatedTasks = storedTasks.filter(task => task !== taskText);
-        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-    }
     });
 
   });
