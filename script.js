@@ -46,11 +46,11 @@ document.addEventListener('DOMContentLoaded', function() {
         storedTasks.forEach(taskText => addTask(taskText, false)); // 'false' indicates not to save again to Local Storage
     }
 
-    addButton.addEventListener('click', addTask);
+    addButton.addEventListener('click', () =>
+      addTask(taskInput.value));
     taskInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
-            addTask();
-
+            addTask(taskInput.value);
         }
     });
 
